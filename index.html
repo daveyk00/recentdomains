@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Database Query Interface</title>
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <title>Recent Domain Registrations</title>
     <style>
         body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
         .form-group { margin-bottom: 15px; }
@@ -20,8 +21,11 @@
     </style>
 </head>
 <body>
-    <h1>Database Query Interface</h1>
-    
+    <h1>Recent Domain Registrations</h1>
+    Enter the date you want to check, or select a domain (wildcards are supported).
+    <br><br>
+    Only choose one.
+    <br><br>
     <form id="queryForm">
         <div class="form-group">
             <label for="dateQuery">Date First Seen:</label>
@@ -30,7 +34,7 @@
         
         <div class="form-group">
             <label for="domainQuery">Domain Name (use * for wildcards):</label>
-            <input type="text" id="domainQuery" name="domainQuery" placeholder="example.com or *.example.com">
+            <input type="text" id="domainQuery" name="domainQuery" placeholder="example.com or *example*">
         </div>
         
         <button type="submit">Search</button>
@@ -83,5 +87,9 @@
             }
         });
     </script>
+    <br><br>
+    favicon from <a href="http://www.freepik.com/">http://www.freepik.com</a>
+
+
 </body>
 </html>

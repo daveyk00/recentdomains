@@ -62,11 +62,18 @@ try {
     
     $pdo = getConnection();
     list($sql, $params) = buildQuery($dateQuery, $domainQuery);
-    
+
     $stmt = $pdo->prepare($sql);
     $stmt->execute($params);
     $results = $stmt->fetchAll();
 
+    // Convert IP integers to dotted decimal format
+    foreach ($results as &$row) {
+        if (isset($row['ip']) && $row['ip'] !== null) {
+            $row['ip'] = long2ip($row['ip']);
+        }
+    }
+    
     echo json_encode([
         'success' => true,
         'results' => $results,
