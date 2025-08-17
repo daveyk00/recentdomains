@@ -28,13 +28,13 @@ function buildQuery($dateQuery, $domainQuery) {
             $params[] = $domainQuery;
         }
     }
-    
+ 
     if (empty($conditions)) {
         throw new Exception("At least one search criteria must be provided");
     }
-    
-    $sql = "SELECT * FROM domains WHERE " . implode(' AND ', $conditions) . " LIMIT 1000";
-    
+
+    $sql = "SELECT * FROM domains WHERE " . implode(' AND ', $conditions) . " ORDER BY domainname LIMIT 1000";
+
     return [$sql, $params];
 }
 

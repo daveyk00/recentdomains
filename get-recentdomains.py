@@ -10,7 +10,8 @@ import ipaddress
 from sqlalchemy import create_engine
 import numpy as np
 from datetime import datetime, date, timedelta
-
+import gzip
+import shutil
 
 
 def ip_to_int_vectorized(ip_series):
@@ -128,19 +129,21 @@ if __name__ == "__main__":
         dateselected = dateselected.strftime('%Y-%m-%d')
         print(dateselected)
 
-    CSV_FILE = "/share/domains/domains"+dateselected+".csv"  # Update with your CSV file path
+
+    gzipFile='/root/domains/domains'+dateselected+'.gz'
+    CSV_FILE = "/root/domains/domains"+dateselected+".csv"  # Update with your CSV file path
     # Update with your actual database credentials
-    DB_USER = "XXXXXXXXXXXXXXXX"
-    DB_PASSWORD = "XXXXXXXXXXXXXXX"
+    DB_USER = "XXXXXXXXXXXXXXXXXXXXx"
+    DB_PASSWORD = "XXXXXXXXXXXXXXXXXXXXXx"
     DB_HOST = "localhost"
-    DB_NAME = "XXXXXXXXXXXXXXXXX"
+    DB_NAME = "XXXXXXXXXXXXXXXXXXXXXX"
 
     CONNECTION_STRING = f"mysql+mysqlconnector://{DB_USER}:{DB_PASSWORD}@{DB_HOST}/{DB_NAME}"
 
     # make pi requeset
     url = "https://isc.sans.edu/api/recentdomains/"+dateselected+"?json"
     print(url)
-    headers = {"User-Agent": "example@example.com"}
+    headers = {"User-Agent": "XXXXXXXXXXXXXXXXXXXXXXXX"}
     response = requests.get(url,headers=headers)
     domains = response.json()
 
@@ -151,20 +154,23 @@ if __name__ == "__main__":
     # check if file has nothing in it (becuase the data from the API was blank?
     if (os.path.getsize(CSV_FILE)) > 1:
         # add to db
+        print("Attempting import to DB")
         import_csv_pandas(CSV_FILE, CONNECTION_STRING)
+        print("Import complete")
     else:
         print("No data to import to DB")
-
 
     # gzip the csv file
     try:
         with open(CSV_FILE,'rb') as inputfile:
-            with gzip.open('/share/domains/domains'+dateselected+'.gz','wb') as outputfile:
+            with gzip.open(gzipFile,'wb') as outputfile:
                 shutil.copyfileobj(inputfile,outputfile)
         os.remove(CSV_FILE)
+        sendEmailCommand="/usr/bin/python3 /root/sendEmail.py --fromemail=XXXXXXXXXXXXXXXx --toemail=XXXXXXXXXXXXXXXXXX --body=RecentDomains --subject=RecentDomains --server=XXXXXXXXXXXXXXXXXXX --attachment="+gzipFile
+        print(sendEmailCommand)
+        os.system(sendEmailCommand)
 
     except Exception as e:
         print(f"Error: {e}")
         import traceback
         traceback.print_exc()
-
